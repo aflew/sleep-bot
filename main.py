@@ -1,6 +1,9 @@
 import discord
 from discord.ext import commands,tasks
 from events import intro,reminder
+#import pymongo
+#from pymongo import MongoClient
+#import intro
 import time
 
 
