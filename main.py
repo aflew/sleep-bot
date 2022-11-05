@@ -1,7 +1,9 @@
 import discord
 from discord.ext import commands
 from events import intro
-
+#import pymongo
+#from pymongo import MongoClient
+#import intro
 
 intents = discord.Intents.default()
 intents.message_content = True
