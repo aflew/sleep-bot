@@ -15,13 +15,12 @@ def checkvalidset(day,time):
         return False
     if len(time) != 5:
         return False
-    for i,letter in enumerate(time):
-        if i == 2:
-            if letter != ':':
-                return False
-        else:
-            if not letter.isnum():
-                return False
+    if int(time[0:2]) > 23:
+        return False
+    if int(time[3:-1]) > 59:
+        return False
+    if time[3] != ':':
+        return False
     return True
 
 
@@ -39,7 +38,11 @@ async def start(ctx):
     await intro.main(ctx,bot)
 
 @bot.command()
-async def set(ctx,day,time):
+async def set(ctx,*args):
+    if len(args) != 2:
+        await ctx.send('usage: !set <day> <time>')
+        return
+    day,time = args[0],args[1]
     fullday = {'mon':'monday','tue':'tuesday',
               'wed':'wednesday','thu':'thursday',
               'fri':'friday','sat':'saturday',
