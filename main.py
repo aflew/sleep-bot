@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands,tasks
-from events import intro
+from events import intro,reminder
 import time
 
 
@@ -9,8 +9,8 @@ intents.message_content = True
 intents.members = True
 
 bot = commands.Bot(command_prefix='!',intents=intents)
-wakeuptimes = {'mon':None,'tue':None,'wed':None,'thu':None,'fri':None,'sat':None,'sun':None}
-weekdays = wakeuptimes.keys() #as in, days of the week, not just mon-fri
+wakeuptimes = {'mon':'00:00','tue':'00:00','wed':'00:00','thu':'00:00','fri':'00:00','sat':'00:00','sun':'00:00',}
+weekdays = list(wakeuptimes.keys()) #as in, days of the week, not just mon-fri
 
 def checkvalidset(day,time):
     if day not in weekdays:
@@ -29,7 +29,7 @@ def checkvalidset(day,time):
 @bot.event
 async def on_ready():
     print(f'We have logged in as {bot.user}')
-    timecheck.start()
+    
 
 #sus
 @bot.command()
@@ -41,6 +41,7 @@ async def sus(ctx):
 async def start(ctx):
     await ctx.send('hi! give me your credit card information')
     await intro.main(ctx,bot)
+    timecheck.start()
 
 #sets the user's wake up times
 @bot.command()
@@ -72,12 +73,23 @@ async def get(ctx,*args):
             await ctx.send('!gettimes <day> for any number of days \n or just !gettimes for all 7 days')
             return
 
+@bot.command()
+async def pause(ctx):
+    timecheck.cancel()
+
 @tasks.loop(minutes=1)
 async def timecheck():
     currenttime = time.localtime()
-
+    wday = weekdays[currenttime.tm_wday]
+    minutetime = currenttime.tm_hour*60 + currenttime.tm_min
+    wakeupmin = int(wakeuptimes[wday][0:2])*60 + int(wakeuptimes[wday][3:])
+    if wakeupmin < minutetime:
+        wday = weekdays[currenttime.tm_wday+1]
+        wakeupmin = wakeupmin = (int(wakeuptimes[wday][0:2])+24)*60 + int(wakeuptimes[wday][3:])
+    timediff = wakeupmin - minutetime
+    if timediff/60 < 9:
+        await reminder.main()
     print(currenttime)
-    pass
 
 
 bot.run('MTAzODUxNjcwMjY0NTg1ODM0NA.GfqTZb.3iecHuyKhVpkKalrw6YGODYzGyw9UvC0ASyNi0')
