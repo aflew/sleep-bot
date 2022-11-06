@@ -1,6 +1,6 @@
 # sleep-bot
 ## Inspiration
-Both of us are always tired, yet when it is time to go to bed, we still stay up late. We also know that sleep is extremely important. Some studies say that up to 96% of college students do not get enough sleep on a regular basis. We know our bot wont change much, but in those few situations where the time just start slipping away, hopefully Sleep Bot will provide enough of a nudge so that you can get a good night's sleep.
+Both of us are always tired, yet when it is time to go to bed, we still stay up late. We also know that sleep is extremely important. Some studies say that up to 96% of college students do not get enough sleep on a regular basis. We know our bot won't change much, but in those few situations where the time just start slipping away, hopefully Sleep Bot will provide enough of a nudge so that you can get a good night's sleep.
 ## What it does
 Sleep Bot is a discord bot where you can input your wake up time for every day of the week. When it is < 9 hours from your wake up time and you are still active on, Sleep Bot will send you a gentle nudge to get to bed. If time goes by, and you are still on discord, Sleep Bot's nudges start to become _not_ _so_ _gentle_. Furthermore, If Sleep Bot notices that you had a poor sleep (< 5 hours), it will ask you how you are feeling. On future nights, where you are ignoring Sleep Bot and staying awake, Sleep Bot will start to use your testimonials to help convince you to go to bed.
 ## How we built it
