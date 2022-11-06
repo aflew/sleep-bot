@@ -12,7 +12,10 @@ intents.presences = True
 bot = commands.Bot(command_prefix='!',intents=intents)
 wakeuptimes = {'mon':'00:00','tue':'00:00','wed':'00:00','thu':'00:00','fri':'00:00','sat':'00:00','sun':'00:00',}
 weekdays = list(wakeuptimes.keys()) #as in, days of the week, not just mon-fri
-users = {}
+users = {} #users is a dictionary where the Discord User objects are the keys that are mapped to
+#the corresponding custom discorduser class (not to be confused with Discord.User) object that has the Discord.User object as one
+#of its attributes
+#lol
 
 
 def checkvalidset(day,time):
@@ -28,7 +31,7 @@ def checkvalidset(day,time):
         return False
     return True
 
-def gettoken(filename='/home/ubuntu/sleep-bot/sleep-bot/token.txt'):
+def gettoken(filename='C:\\Users\\malle\\sleep-bot\\events\\token.txt'):
      f = open(filename)
      token = f.readline()
      return token
@@ -40,10 +43,6 @@ def userexists(discordId):
 #self.wakeuptimes for user's wakeuptimes
 #self.discord is the built-in Discord User class
 #self.memb is the built-in Discord Member class
-#users is a dictionary where the discord User object is the key that is mapped to
-#the corresponding custom discorduser (not to be confused with discord.User) object that has the discord.User object as one
-#of its attributes
-#lol
 class discorduser():
     def __init__(self,discorduser):
         self.wakeuptimes = {'mon':'08:00','tue':'08:00',
@@ -53,6 +52,7 @@ class discorduser():
         self.count = 0
         self.discord = discorduser
         self.counting = True
+        self.message = []
 
 @bot.event
 async def on_ready():
@@ -65,7 +65,7 @@ async def sus(ctx):
 
 #sends user to intro message and creates user object for them
 @bot.command()
-async def start(ctx):
+async def start(ctx,*args):
     if not userexists(ctx.author):
         users[ctx.author] = discorduser(ctx.author) # I know. This is awful. But I am tired and need sleep. The irony.
         users[ctx.author].id = ctx.author.id
@@ -80,8 +80,9 @@ async def info(ctx):
     await intro.main(ctx)
 
 @bot.command()
-async def message(ctx,args):
+async def message(ctx,*args):
     user = users[ctx.author]
+    user.message.append(' '.join(args))
 
 
 #sets the user's wake up times
@@ -98,7 +99,10 @@ async def set(ctx,*args):
               'sun':'sunday'}
     if checkvalidset(day,time):
         user.wakeuptimes[day] = time
-        await ctx.send(f'set wakeup time for {fullday[day]} to {time}')
+        await ctx.author.send(f'set wakeup time for {fullday[day]} to {time}')
+    elif day == 'all':
+        for d in user.wakeuptimes.keys():
+            user.wakeuptimes[d] = time
     else:
         await ctx.send('wrong. idiot.')
 
@@ -113,7 +117,7 @@ async def get(ctx,*args):
         try:
             await ctx.send(f'{day}: {user.wakeuptimes[day]}')
         except:
-            await ctx.send('!gettimes <day> for any number of days \n or just !gettimes for all 7 days')
+            await ctx.send('!get <day> for any number of days \n or just !get for all 7 days')
             return
 
 @bot.command()
