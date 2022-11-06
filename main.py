@@ -15,6 +15,7 @@ bot = commands.Bot(command_prefix='!',intents=intents)
 wakeuptimes = {'mon':'00:00','tue':'00:00','wed':'00:00','thu':'00:00','fri':'00:00','sat':'00:00','sun':'00:00',}
 weekdays = list(wakeuptimes.keys()) #as in, days of the week, not just mon-fri
 
+
 def checkvalidset(day,time):
     if day not in weekdays:
         return False
@@ -44,7 +45,8 @@ async def sus(ctx):
 async def start(ctx):
     await ctx.send('hi! give me your credit card information')
     await intro.main(ctx,bot)
-    timecheck.start()
+    count = 0
+    timecheck.start(1)
 
 #sets the user's wake up times
 @bot.command()
@@ -80,8 +82,8 @@ async def get(ctx,*args):
 async def pause(ctx):
     timecheck.cancel()
 
-@tasks.loop(minutes=1)
-async def timecheck():
+@tasks.loop(seconds = 10)
+async def timecheck(count):
     currenttime = time.localtime()
     wday = weekdays[currenttime.tm_wday]
     minutetime = currenttime.tm_hour*60 + currenttime.tm_min
@@ -90,8 +92,12 @@ async def timecheck():
         wday = weekdays[currenttime.tm_wday+1]
         wakeupmin = wakeupmin = (int(wakeuptimes[wday][0:2])+24)*60 + int(wakeuptimes[wday][3:])
     timediff = wakeupmin - minutetime
-    if timediff/60 < 9:
-        await reminder.main()
+    if timediff/60 < 9 and timediff > 0:
+        if count % 5 == 0:
+            await reminder.main(bot)
+        count +=1
+    if timediff == 0:
+        count = 0
     print(currenttime)
 
 
