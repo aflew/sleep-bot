@@ -111,7 +111,7 @@ async def set(ctx,*args):
 @bot.command()
 async def get(ctx,*args):
     user = users[ctx.author] #theres gotta be a better way bro
-    if len(args) == 0:
+    if len(args) == 0 or 'all' in args:
         for day in user.wakeuptimes.keys():
             await ctx.send(f'{day}: {user.wakeuptimes[day]}')
     for day in args:
@@ -130,6 +130,25 @@ async def pause(ctx):
 async def play(ctx):
     users[ctx.author].counting = True
     await ctx.send('counting your minutes!')
+
+@bot.command()
+async def cancel(ctx):
+    await ctx.send('Goodbye. Type !start to restart services')
+    del users[ctx.author]
+
+@bot.command()
+async def reset(ctx,*args):
+    user = users[ctx.author]
+    if len(args)==0:
+        args = 'all'
+    for a in args:
+        if a in ['all','message']:
+            user.message = []
+        if a in ['all','times']:
+            user.wakeuptimes = {'mon':'08:00','tue':'08:00','wed':'08:00',
+                                'thu':'08:00','fri':'08:00','sat':'08:00',
+                                'sun':'08:00',}
+
 
 @tasks.loop(minutes = 1)
 async def timecheck():

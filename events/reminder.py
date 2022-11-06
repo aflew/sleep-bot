@@ -11,10 +11,10 @@ async def main(user,timediff):
     if timediff != 0:
         await user.discord.send(f"{trunc(timediff/60):0>2}:{timediff%60:0>2}{neutral[randint(0,len(neutral)-1)]}")
         if timediff >= 420 and timediff <540:
-            await user.discord.send(f'<@{user.id}> {stern[randint(0,len(stern)-1)]}\n\n')
+            await user.discord.send(f'<@{user.id}> {stern[randint(0,len(stern)-1)]}\n\n ')
         if timediff >=300 and timediff < 420:
-            await user.discord.send(f'<@{user.id}> {mad[randint(0,len(mad)-1)]}\n\n')
+            await user.discord.send(f'<@{user.id}> {mad[randint(0,len(mad)-1)]}\n\n ')
         if timediff < 300:
-            await user.discord.send(f'<@{user.id}> I am rapidly aproaching your location \nGo to sleep NOW\n\n')
+            await user.discord.send(f'<@{user.id}> I am rapidly aproaching your location \nGo to sleep NOW\n\n ')
             if user.message != []:
-                await user.discord.send(f'{custom[randint(0,len(custom)-1)]} \n"{user.message[randint(0,len(user.message)-1)]}"\n\n')
+                await user.discord.send(f'{custom[randint(0,len(custom)-1)]} \n"{user.message[randint(0,len(user.message)-1)]}"\n\n ')
