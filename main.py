@@ -33,9 +33,9 @@ def checkvalidset(day,time):
     return True
 
 def gettoken(filename='C:\\Users\\malle\\sleep-bot\\events\\token.txt'):
-     f = open(filename)
-     token = f.readline()
-     return token
+    f = open(filename)
+    token = f.readline()
+    return token
 
 def userexists(discorduser): #checks if there is a discorduser corresponding to the ctx.author usually
     return discorduser in users.keys()
@@ -110,15 +110,16 @@ async def set(ctx,*args):
         return
     day,time = args[0],args[1]
     fullday = {'mon':'monday','tue':'tuesday',
-              'wed':'wednesday','thu':'thursday',
-              'fri':'friday','sat':'saturday',
-              'sun':'sunday'}
+               'wed':'wednesday','thu':'thursday',
+               'fri':'friday','sat':'saturday',
+               'sun':'sunday'}
     if checkvalidset(day,time):
         user.wakeuptimes[day] = time
         await ctx.author.send(f'set wakeup time for {fullday[day]} to {time}')
     elif day == 'all':
         for d in user.wakeuptimes.keys():
             user.wakeuptimes[d] = time
+        await ctx.author.send(f'set wakeup time for all to {time}')
     else:
         await ctx.send('usage: !set <day> <time>')
 
@@ -170,10 +171,12 @@ async def reset(ctx,*args):
     for a in args:
         if a in ['all','message']: #me being quirky and doing a similar thing in entirely different ways across functions
             user.message = []
+            await ctx.send('Reset messages')
         if a in ['all','times']:
             user.wakeuptimes = {'mon':'08:00','tue':'08:00','wed':'08:00',
                                 'thu':'08:00','fri':'08:00','sat':'08:00',
                                 'sun':'08:00',}
+            await ctx.send('Reset times')
 
 #uhhh dont worry about these commands
 @bot.command()
@@ -199,9 +202,9 @@ async def timecheck():
                 else:
                     wday = 'mon'
                 wakeupmin = wakeupmin = (int(u.wakeuptimes[wday][0:2])+24)*60 + int(u.wakeuptimes[wday][3:]) #what the fuck
-                #         ^I could   ^just fix this but like genuinely what is going on here
+                #         ^I could    ^just fix this but like genuinely what is going on here
             timediff = wakeupmin - minutetime #time in minutes to next wakeuptime
-            pingfreq = 1 #how often the bot will bother you (minutes)
+            pingfreq = 20 #how often the bot will bother you (minutes)
             if timediff/60 < 9: #annoyances start 9 hours from wakeup
                 if (u.count%pingfreq == 0) and str(u.memb.raw_status) == 'online': #only pings if user is online (assumes online = awake)
                     if timediff < u.mintime: #keeps track of how close you were to your wakeuptime
