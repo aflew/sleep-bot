@@ -1,2 +1,3 @@
-async def main():
+async def main(bot,timediff):
+    
     pass

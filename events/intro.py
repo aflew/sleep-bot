@@ -1,5 +1,5 @@
 
-async def main(ctx,bot):
+async def main(ctx):
     await ctx.send('Welcome to Sleep Bot! \n Sleep Bot is a simple bot that will remind you to go to sleep. Whether the time slipped away from you, or you have forgotten the consequences of a poor sleep, Sleep Bot will be there to remind you its time to sleep')
     await ctx.send('We do this in 3 simple ways. \
     \n1. Starting 9 hours from your wake up time, Sleep Bot will send you a reminder every 20 minutes to get to bed \
