@@ -7,6 +7,7 @@ import time
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
+intents.presences = True
 
 bot = commands.Bot(command_prefix='!',intents=intents)
 wakeuptimes = {'mon':'00:00','tue':'00:00','wed':'00:00','thu':'00:00','fri':'00:00','sat':'00:00','sun':'00:00',}
@@ -27,14 +28,22 @@ def checkvalidset(day,time):
         return False
     return True
 
-# def gettoken(filename='C:\Users\malle\sleep-bot\events\token.txt'):
-#     f = open(filename)
-#     token = f.readline()
-#     return token
+def gettoken(filename='/home/ubuntu/sleep-bot/sleep-bot/token.txt'):
+     f = open(filename)
+     token = f.readline()
+     return token
 
 def userexists(discordId):
     return discordId in users.keys()
 
+# I am so sorry about this one
+#self.wakeuptimes for user's wakeuptimes
+#self.discord is the built-in Discord User class
+#self.memb is the built-in Discord Member class
+#users is a dictionary where the discord User object is the key that is mapped to
+#the corresponding custom discorduser (not to be confused with discord.User) object that has the discord.User object as one
+#of its attributes
+#lol
 class discorduser():
     def __init__(self,discorduser):
         self.wakeuptimes = {'mon':'08:00','tue':'08:00',
@@ -59,9 +68,12 @@ async def sus(ctx):
 async def start(ctx):
     if not userexists(ctx.author):
         users[ctx.author] = discorduser(ctx.author) # I know. This is awful. But I am tired and need sleep. The irony.
+        users[ctx.author].id = ctx.author.id
+        users[ctx.author].memb = await commands.MemberConverter().convert(ctx,str(users[ctx.author].id))
     await ctx.send('hi! give me your credit card information')
     await intro.main(ctx)
-    timecheck.start()
+    if not timecheck.is_running():
+        timecheck.start()
 
 #sets the user's wake up times
 @bot.command()
@@ -108,7 +120,7 @@ async def play(ctx):
 @tasks.loop(minutes = 1)
 async def timecheck():
     for user in users.keys():
-        u = users[user]
+        u = users[user] #I am genuinely the worst object oriented programmer on the planet
         if u.counting:
             currenttime = time.localtime()
             wday = weekdays[currenttime.tm_wday]
@@ -118,8 +130,12 @@ async def timecheck():
                 wday = weekdays[currenttime.tm_wday+1]
                 wakeupmin = wakeupmin = (int(u.wakeuptimes[wday][0:2])+24)*60 + int(u.wakeuptimes[wday][3:])
             timediff = wakeupmin - minutetime
+            pingfreq = 1
             if timediff/60 < 9:
-                if u.count%20 == 0:
+                #print(u.memb.raw_status)
+                #print(str(u.memb.raw_status) == 'online')
+                #print(str(u.memb.status) == 'online')
+                if (u.count%pingfreq == 0) and str(u.memb.raw_status) == 'online':
                     #check if user is active somehow
                     #if user active and timediff<mintimediff
                         #mintimediff = timediff
@@ -133,5 +149,5 @@ async def timecheck():
                 u.count = 0
             print(currenttime)
 
-token = 'MTAzODUxNjcwMjY0NTg1ODM0NA.GfqTZb.3iecHuyKhVpkKalrw6YGODYzGyw9UvC0ASyNi0'#gettoken()
+token = gettoken()
 bot.run(token)
