@@ -75,6 +75,15 @@ async def start(ctx):
     if not timecheck.is_running():
         timecheck.start()
 
+@bot.command()
+async def info(ctx):
+    await intro.main(ctx)
+
+@bot.command()
+async def message(ctx,args):
+    user = users[ctx.author]
+
+
 #sets the user's wake up times
 @bot.command()
 async def set(ctx,*args):
