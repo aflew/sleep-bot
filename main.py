@@ -27,10 +27,10 @@ def checkvalidset(day,time):
         return False
     return True
 
-def gettoken(filename='C:\Users\malle\sleep-bot\events\token.txt'):
-    f = open(filename)
-    token = f.readline()
-    return token
+# def gettoken(filename='C:\Users\malle\sleep-bot\events\token.txt'):
+#     f = open(filename)
+#     token = f.readline()
+#     return token
 
 def userexists(discordId):
     return discordId in users.keys()
@@ -120,11 +120,18 @@ async def timecheck():
             timediff = wakeupmin - minutetime
             if timediff/60 < 9:
                 if u.count%20 == 0:
-                    await reminder.main(u,timediff)
+                    #check if user is active somehow
+                    #if user active and timediff<mintimediff
+                        #mintimediff = timediff
+                    #if mintimediff - timediff > 30 and not init_nextday
+                        #person is hopefully asleep
+                        #initiate next day program
+                        #init_nextday = true
+                    await reminder.main(u,timediff) #pass status into this func
                 u.count +=1
             if timediff == 0:
                 u.count = 0
             print(currenttime)
 
-token = gettoken()
+token = 'MTAzODUxNjcwMjY0NTg1ODM0NA.GfqTZb.3iecHuyKhVpkKalrw6YGODYzGyw9UvC0ASyNi0'#gettoken()
 bot.run(token)
