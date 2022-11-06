@@ -1,2 +1,2 @@
-async def main(bot):
-    print('it works :)')
+async def main():
+    pass
