@@ -40,11 +40,6 @@ def gettoken(filename='C:\\Users\\malle\\sleep-bot\\events\\token.txt'):
 def userexists(discorduser): #checks if there is a discorduser corresponding to the ctx.author usually
     return discorduser in users.keys()
 
-async def usercheck(ctx):
-    if not userexists(ctx.author):
-        await ctx.send('do !start first')
-        return False
-    return True
 
 # I am so sorry about this one
 #self.wakeuptimes for user's wakeuptimes
@@ -97,7 +92,7 @@ async def info(ctx):
 
 @bot.command()
 async def message(ctx,*args):
-    if not usercheck(ctx):
+    if not userexists(ctx.author):
         return
     user = users[ctx.author]
     user.message.append(' '.join(args))
@@ -107,7 +102,7 @@ async def message(ctx,*args):
 #sets the user's wake up times
 @bot.command()
 async def set(ctx,*args):
-    if not usercheck(ctx):
+    if not userexists(ctx.author):
         return
     user = users[ctx.author]
     if len(args) != 2:
@@ -130,7 +125,7 @@ async def set(ctx,*args):
 #gets the users wakeup times
 @bot.command()
 async def get(ctx,*args):
-    if not usercheck(ctx):
+    if not userexists(ctx.author):
         return
     user = users[ctx.author] #theres gotta be a better way bro
     if len(args) == 0 or 'all' in args:
@@ -145,14 +140,14 @@ async def get(ctx,*args):
 
 @bot.command()
 async def pause(ctx):
-    if not usercheck(ctx):
+    if not userexists(ctx.author):
         return
     users[ctx.author].counting = False
     await ctx.send('ok paused')
 
 @bot.command()
 async def play(ctx):
-    if not usercheck(ctx):
+    if not userexists(ctx.author):
         return
     users[ctx.author].counting = True
     await ctx.send('counting your minutes!')
@@ -167,7 +162,7 @@ async def cancel(ctx):
 
 @bot.command()
 async def reset(ctx,*args):
-    if not usercheck(ctx):
+    if not userexists(ctx.author):
         return
     user = users[ctx.author]
     if len(args)==0:
