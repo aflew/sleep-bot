@@ -76,7 +76,7 @@ async def start(ctx,*args):
         users[ctx.author] = discorduser(ctx.author) # I know. This is awful. But I am tired and need sleep. The irony.
         users[ctx.author].id = ctx.author.id
         users[ctx.author].memb = await commands.MemberConverter().convert(ctx,str(users[ctx.author].id))
-    await ctx.author.send('hi! give me your credit card information')
+   #await ctx.author.send('hi! give me your credit card information')
     start_suppress = False
     if len(args) == 1:
         if str(args[0]) == '-' :
@@ -120,7 +120,7 @@ async def set(ctx,*args):
         for d in user.wakeuptimes.keys():
             user.wakeuptimes[d] = time
     else:
-        await ctx.send('wrong. idiot.')
+        await ctx.send('usage: !set <day> <time>')
 
 #gets the users wakeup times
 @bot.command()
@@ -203,9 +203,6 @@ async def timecheck():
             timediff = wakeupmin - minutetime #time in minutes to next wakeuptime
             pingfreq = 1 #how often the bot will bother you (minutes)
             if timediff/60 < 9: #annoyances start 9 hours from wakeup
-                #print(u.memb.raw_status)
-                #print(str(u.memb.raw_status) == 'online')
-                #print(str(u.memb.status) == 'online')
                 if (u.count%pingfreq == 0) and str(u.memb.raw_status) == 'online': #only pings if user is online (assumes online = awake)
                     if timediff < u.mintime: #keeps track of how close you were to your wakeuptime
                         u.mintime = timediff

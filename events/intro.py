@@ -11,7 +11,7 @@ async def main(ctx):
     \nIf you would like to pause sleep bot for any given amount of time, input "!pause" to stop the service and "!play" to restart it.\n')
     await ctx.author.send('To resend the introduction, input "!info"\n')
     await sleep(1.5)
-    await ctx.author.send('To begin, what time would you like to wake up each day? \n(format: !set mon 06:30)')
+    await ctx.author.send('To begin, what time would you like to wake up each day? Default: 08:00\n(format: !set mon 06:30)')
     await ctx.author.send('You can change your wake up times at any point using the same format. \n Use the input "!get" to see what times you have set for the whole week \n\
     or "!get <day>" (ex. "!get mon") for specific days.')
     await ctx.author.send('\nNote: We use a 24 hour clock')
