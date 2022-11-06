@@ -29,23 +29,23 @@ def checkvalidset(day,time):
         return False
     return True
 
-def gettoken(filename='token.txt'):
+def gettoken(filename='/home/ubuntu/sleep-bot/sleep-bot/token.txt'):
     f = open(filename)
     token = f.readline()
     return token
 
 def userexists(discordId):
-    return discordId in users.values()
+    return discordId in users.keys()
 
-
-class user():
+class discorduser():
     def __init__(self,discorduser):
-        self.wakeuptimes = {'mon':'00:00','tue':'00:00',
-                            'wed':'00:00','thu':'00:00',
-                            'fri':'00:00','sat':'00:00',
-                            'sun':'00:00',}
+        self.wakeuptimes = {'mon':'08:00','tue':'08:00',
+                            'wed':'08:00','thu':'08:00',
+                            'fri':'08:00','sat':'08:00',
+                            'sun':'08:00',}
         self.count = 0
         self.discord = discorduser
+        self.counting = True
 
 @bot.event
 async def on_ready():
@@ -56,14 +56,14 @@ async def on_ready():
 async def sus(ctx):
     await ctx.send('iposter')
 
-#sends user to intro message
+#sends user to intro message and creates user object for them
 @bot.command()
 async def start(ctx):
     if not userexists(ctx.author):
-        users[ctx.author] = user(ctx.author) # I know. This is awful. But I am tired and need sleep. The irony.
+        users[ctx.author] = discorduser(ctx.author) # I know. This is awful. But I am tired and need sleep. The irony.
     await ctx.send('hi! give me your credit card information')
     await intro.main(ctx)
-    timecheck.start(users[ctx.author])
+    timecheck.start()
 
 #sets the user's wake up times
 @bot.command()
@@ -99,25 +99,30 @@ async def get(ctx,*args):
 
 @bot.command()
 async def pause(ctx):
-    timecheck.cancel()
+    users[ctx.author].counting = False
+    await ctx.send('ok paused')
 
 @bot.command()
 async def play(ctx):
-    timecheck.start(users[ctx.author])
+    users[ctx.author].counting = True
+    await ctx.send('counting your minutes!')
 
 @tasks.loop(minutes=1)
-async def timecheck(user):
-    currenttime = time.localtime()
-    wday = weekdays[currenttime.tm_wday]
-    minutetime = currenttime.tm_hour*60 + currenttime.tm_min
-    wakeupmin = int(wakeuptimes[wday][0:2])*60 + int(wakeuptimes[wday][3:])
-    if wakeupmin < minutetime:
-        wday = weekdays[currenttime.tm_wday+1]
-        wakeupmin = wakeupmin = (int(wakeuptimes[wday][0:2])+24)*60 + int(wakeuptimes[wday][3:])
-    timediff = wakeupmin - minutetime
-    if timediff/60 < 9:
-        await reminder.main(bot,timediff)
-    print(currenttime)
+async def timecheck():
+    for user in users.keys():
+        u = users[user]
+        if u.counting:
+            currenttime = time.localtime()
+            wday = weekdays[currenttime.tm_wday]
+            minutetime = currenttime.tm_hour*60 + currenttime.tm_min
+            wakeupmin = int(u.wakeuptimes[wday][0:2])*60 + int(u.wakeuptimes[wday][3:])
+            if wakeupmin < minutetime:
+                wday = weekdays[currenttime.tm_wday+1]
+                wakeupmin = wakeupmin = (int(u.wakeuptimes[wday][0:2])+24)*60 + int(u.wakeuptimes[wday][3:])
+            timediff = wakeupmin - minutetime
+            if timediff/60 < 9:
+                await reminder.main(u,timediff)
+            print(currenttime)
 
 token = gettoken()
 bot.run(token)
