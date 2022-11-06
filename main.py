@@ -53,6 +53,7 @@ class discorduser():
         self.discord = discorduser
         self.counting = True
         self.message = []
+        self.mintime = 24*60
 
 @bot.event
 async def on_ready():
@@ -63,15 +64,21 @@ async def on_ready():
 async def sus(ctx):
     await ctx.send('iposter')
 
-#sends user to intro message and creates user object for them
+#sends user to intro message and creates user object for them 
+#if the user includes the arguement "-" it will supress the output of intro
 @bot.command()
 async def start(ctx,*args):
     if not userexists(ctx.author):
         users[ctx.author] = discorduser(ctx.author) # I know. This is awful. But I am tired and need sleep. The irony.
         users[ctx.author].id = ctx.author.id
         users[ctx.author].memb = await commands.MemberConverter().convert(ctx,str(users[ctx.author].id))
-    await ctx.send('hi! give me your credit card information')
-    await intro.main(ctx)
+    await ctx.author.send('hi! give me your credit card information')
+    start_suppress = False
+    if len(args) == 1:
+        if str(args[0]) == '-' :
+            start_suppress = True
+    if not start_suppress:
+        await intro.main(ctx)
     if not timecheck.is_running():
         timecheck.start()
 
@@ -140,7 +147,10 @@ async def timecheck():
             minutetime = currenttime.tm_hour*60 + currenttime.tm_min
             wakeupmin = int(u.wakeuptimes[wday][0:2])*60 + int(u.wakeuptimes[wday][3:])
             if wakeupmin < minutetime:
-                wday = weekdays[currenttime.tm_wday+1]
+                if wday < 6:
+                    wday = weekdays[currenttime.tm_wday+1]
+                else:
+                    wday = 'mon'
                 wakeupmin = wakeupmin = (int(u.wakeuptimes[wday][0:2])+24)*60 + int(u.wakeuptimes[wday][3:])
             timediff = wakeupmin - minutetime
             pingfreq = 1
@@ -150,17 +160,18 @@ async def timecheck():
                 #print(str(u.memb.status) == 'online')
                 if (u.count%pingfreq == 0) and str(u.memb.raw_status) == 'online':
                     #check if user is active somehow
-                    #if user active and timediff<mintimediff
-                        #mintimediff = timediff
-                    #if mintimediff - timediff > 30 and not init_nextday
-                        #person is hopefully asleep
-                        #initiate next day program
-                        #init_nextday = true
+                    if timediff < u.mintime:
+                        u.mintime = timediff
                     await reminder.main(u,timediff) #pass status into this func
                 u.count +=1
             if timediff == 0:
                 u.count = 0
             print(currenttime)
+        if wday == weekdays[currenttime.tm_wday] and minutetime == wakeupmin and u.mintime < 300:
+            await u.discord.send(f'<@{u.id}> Noticed you had a rough sleep, you should leave a message for yourself \nUse "!message"')
+            u.mintime = 24*60
+        
+
 
 token = gettoken()
 bot.run(token)
