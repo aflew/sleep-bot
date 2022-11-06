@@ -4,7 +4,7 @@ import discord
 async def main(user,timediff):
     neutral = [' before you have to wake up',' until the next day begins',' before the cycle begins anew'," before your planned time to wake up"]
     stern = ['You should probably get to bed','Your precious hours of sleep are dwindling','Going to sleep now would really be nice for you',
-             'Think about how nice it will feel after a full 8 hours']
+             'Think about how nice it will feel after a full sleep']
     mad = ['You should go to sleep - for real this time',"You're going to regret this, bozo",
            '"Surely nothing will go wrong if I stay up this late"- WRONG']
     custom = ['Last time you slept this little, this is how you felt:',"Here's a message from the past:",
