@@ -90,6 +90,7 @@ async def info(ctx):
 async def message(ctx,*args):
     user = users[ctx.author]
     user.message.append(' '.join(args))
+    await user.discord.send('custom message added')
 
 
 #sets the user's wake up times
@@ -173,5 +174,6 @@ async def timecheck():
         
 
 
-token = gettoken()
+#token = gettoken()
+token = gettoken('/home/ubuntu/sleep-bot/sleep-bot/token.txt')
 bot.run(token)
