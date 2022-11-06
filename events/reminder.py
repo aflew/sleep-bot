@@ -1,5 +1,6 @@
 from math import trunc
 from random import randint
+import discord
 async def main(user,timediff):
     neutral = [' before you have to wake up',' until the next day begins',' before the cycle begins anew'," before your planned time to wake up"]
     stern = ['You should probably get to bed','Your precious hours of sleep are dwindling','Going to sleep now would really be nice for you',
@@ -18,3 +19,5 @@ async def main(user,timediff):
             await user.discord.send(f'<@{user.id}> I am rapidly aproaching your location \nGo to sleep NOW\n\n ')
             if user.message != []:
                 await user.discord.send(f'{custom[randint(0,len(custom)-1)]} \n"{user.message[randint(0,len(user.message)-1)]}"\n\n ')
+    if randint(1,100) == 100:
+        await user.discord.send(file=discord.File('/home/ubuntu/sleep-bot/sleep-bot/saul.gif'))
