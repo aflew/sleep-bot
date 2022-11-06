@@ -27,10 +27,10 @@ def checkvalidset(day,time):
         return False
     return True
 
-#def gettoken(filename='C:\Users\malle\sleep-bot\events\\token.txt'):
- #   f = open(filename)
-  #  token = f.readline()
-   # return token
+def gettoken(filename='C:\Users\malle\sleep-bot\events\token.txt'):
+    f = open(filename)
+    token = f.readline()
+    return token
 
 def userexists(discordId):
     return discordId in users.keys()
@@ -126,5 +126,5 @@ async def timecheck():
                 u.count = 0
             print(currenttime)
 
-token = 'MTAzODUxNjcwMjY0NTg1ODM0NA.GfqTZb.3iecHuyKhVpkKalrw6YGODYzGyw9UvC0ASyNi0' #gettoken()
+token = gettoken()
 bot.run(token)
