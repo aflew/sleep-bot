@@ -27,10 +27,10 @@ def checkvalidset(day,time):
         return False
     return True
 
-def gettoken(filename='/home/ubuntu/sleep-bot/sleep-bot/token.txt'):
-    f = open(filename)
-    token = f.readline()
-    return token
+#def gettoken(filename='C:\Users\malle\sleep-bot\events\\token.txt'):
+ #   f = open(filename)
+  #  token = f.readline()
+   # return token
 
 def userexists(discordId):
     return discordId in users.keys()
@@ -105,7 +105,7 @@ async def play(ctx):
     users[ctx.author].counting = True
     await ctx.send('counting your minutes!')
 
-@tasks.loop(minutes=1)
+@tasks.loop(minutes = 1)
 async def timecheck():
     for user in users.keys():
         u = users[user]
@@ -119,8 +119,12 @@ async def timecheck():
                 wakeupmin = wakeupmin = (int(u.wakeuptimes[wday][0:2])+24)*60 + int(u.wakeuptimes[wday][3:])
             timediff = wakeupmin - minutetime
             if timediff/60 < 9:
-                await reminder.main(u,timediff)
+                if u.count%20 == 0:
+                    await reminder.main(u,timediff)
+                u.count +=1
+            if timediff == 0:
+                u.count = 0
             print(currenttime)
 
-token = gettoken()
+token = 'MTAzODUxNjcwMjY0NTg1ODM0NA.GfqTZb.3iecHuyKhVpkKalrw6YGODYzGyw9UvC0ASyNi0' #gettoken()
 bot.run(token)
